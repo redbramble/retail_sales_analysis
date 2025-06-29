@@ -5,7 +5,7 @@ import seaborn
 # Reads data from the provided Excel file
 df = pd.read_excel("retail_sales_data.xlsx", sheet_name = "Data")
 
-# Extracts year and month from OrderDate column
+# Makes sure OrderDate is a datetime object and extracts year and month from OrderDate column
 df['OrderDate'] = pd.to_datetime(df['OrderDate'])
 df['Year'] = df['OrderDate'].dt.year
 df['Month'] = df['OrderDate'].dt.to_period("M")
@@ -41,4 +41,17 @@ region_category = df.groupby(['Region', 'Category'])['TotalSales'].sum().reset_i
 seaborn.barplot(data=region_category, x='TotalSales', y='Region', hue='Category')
 plt.title("Sales by Region and Category")
 plt.savefig("visualisation/sales_by_region_and_category.png")
+plt.show()
+
+# Visualisation 3 - Yearly Sales by Category
+plt.figure(figsize=(12, 6))
+df['Year'] = df['OrderDate'].dt.year
+yearly_category_sales = df.groupby(['Year', 'Category'])['TotalSales'].sum().reset_index()
+seaborn.barplot(data=yearly_category_sales, x='Year', y='TotalSales', hue='Category', palette='Set2')
+plt.title('Total Sales by Year and Category')
+plt.xlabel('Year')
+plt.ylabel('Total Sales')
+plt.legend(title='Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.tight_layout()
+plt.savefig("visualisation/yearly_sales_by_category.png")
 plt.show()
